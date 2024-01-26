@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- Metadata -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1,user-scalable=no,maximum-scale=1,width=device-width">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="author" content="DIVSIG UGM">
+    <meta name="description" content="leaflet basic">
+    <link href="assets/img/favicon2.jpg" rel="icon">
+    <link href="assets/img/favicon2.jpg" rel="apple-touch-icon">
+
+    <!-- Judul pada tab browser -->
+    <title>Web GIS Bucin</title>
+
+    <!--leafleat Javascript Library-->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+
+    <!-- Search CSS Library -->
+    <link rel="stylesheet" href="assets/plugins/leaflet-search/leaflet-search.css" />
+
+    <!-- Geolocation CSS Library for Plugin -->
+    <link rel="stylesheet"
+        href="https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-locatecontrol/v0.43.0/L.Control.Locate.css" />
+
+    <!-- Leaflet Mouse Position CSS Library -->
+    <link rel="stylesheet" href="assets/plugins/leaflet-mouseposition/L.Control.MousePosition.css" />
+
+    <!-- Leaflet Measure CSS Library -->
+    <link rel="stylesheet" href="assets/plugins/leaflet-measure/leaflet-measure.css" />
+
+    <!-- EasyPrint CSS Library -->
+    <link rel="stylesheet" href="assets/plugins/leaflet-easyprint/easyPrint.css" />
+
+    <!-- Marker Cluster -->
+    <link rel="stylesheet" href="assets/plugins/leaflet-markercluster/MarkerCluster.css" />
+    <link rel="stylesheet" href="assets/plugins/leaflet-markercluster/MarkerCluster.Default.css" />
+
+    <!-- Routing -->
+    <link rel="stylesheet" href="assets/plugins/leaflet-routing/leaflet-routing-machine.css" />
+
+</head>
+
+
+<style>
+    #map {
+        height: 100vh;
+    }
+
+    #backToHome {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        z-index: 1000;
+        background-color: #007BFF;
+        color: #fff;
+        border: none;
+        padding: 10px;
+        cursor: pointer;
+    }
+
+    /* Background pada Judul */
+    *.info {
+        padding: 6px 8px;
+        font: 14px/16px Arial, Helvetica, sans-serif;
+        background: white;
+        background: rgba(255, 255, 255, 0.8);
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+        border-radius: 5px;
+        text-align: center;
+    }
+
+    .info h2 {
+        margin: 0 0 5px;
+        color: #777;
+    }
+</style>
+</head>
+
+<body>
+    <audio id="backgroundMusic" autoplay loop>
+        <source src="assets2/img/audiosurgakukamu.mp3" type="audio/mp3">
+    </audio>
+    <div id="map"></div>
+    <button id="backToHome" onclick="backToHome()">Kembali ke Halaman Utama</button>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chroma-js/2.1.0/chroma.min.js"></script>
+
+    <!-- Search JavaScript Library -->
+    <script src="assets/plugins/leaflet-search/leaflet-search.js"></script>
+
+    <!-- Geolocation Javascript Library -->
+    <script
+        src="https://api.tiles.mapbox.com/mapbox.js/plugins/leaflet-locatecontrol/v0.43.0/L.Control.Locate.min.js"></script>
+
+    <!-- Leaflet Mouse Position JavaScript Library -->
+    <script src="assets/plugins/leaflet-mouseposition/L.Control.MousePosition.js"></script>
+
+    <!-- Leaflet Measure JavaScript Library -->
+    <script src="assets/plugins/leaflet-measure/leaflet-measure.js"></script>
+
+    <!-- EasyPrint JavaScript Library -->
+    <script src="assets/plugins/leaflet-easyprint/leaflet.easyPrint.js"></script>
+
+    <!-- Marker Cluster -->
+    <script src="assets/plugins/leaflet-markercluster/leaflet.markercluster.js"></script>
+    <script src="assets/plugins/leaflet-markercluster/leaflet.markercluster-src.js"></script>
+
+    <!-- Routing -->
+    <script src="assets/plugins/leaflet-routing/leaflet-routing-machine.js"></script>
+    <script src="assets/plugins/leaflet-routing/leaflet-routing-machine.min.js"></script>
+
+    <script>
+        function backToHome() {
+            // Fungsi untuk kembali ke halaman utama, bisa disesuaikan dengan kebutuhan
+            window.location.href = 'index.html';  // Ganti 'halaman-utama.html' dengan halaman utama yang sebenarnya
+        }
+
+        /* Initial Map */
+        var map = L.map('map').setView([-7.794760241050732, 110.36718249219427], 9); //lat, long, zoom
+
+        /* Judul dan Subjudul */
+        var title = new L.Control();
+        title.onAdd = function (map) {
+            this._div = L.DomUtil.create('div', 'info');
+            this.update();
+            return this._div;
+        };
+        title.update = function () {
+            this._div.innerHTML = '<h2>WEB GIS BUCIN | Indra dan Thalita</h2>Arsip perjalanan tempat yang  pernah kita kunjungi berdua sejauh ini hingga Januari 2024'
+        };
+        title.addTo(map);
+
+        /* Tile Basemap */
+        var basemap1 = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '<a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> | <a href="DIVSIG UGM" target="_blank">DIVSIG UGM</a>' //menambahkan nama//
+        });
+        var basemap2 = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{ z } / { y } / { x }',
+            {
+                attribution: 'Tiles &copy; Esri | <a href="Latihan WebGIS" target="_blank">DIVSIG UGM</a>'
+            });
+        var basemap3 = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{ z } / { y } / { x }',
+            {
+                attribution: 'Tiles &copy; Esri | <a href="Lathan WebGIS" target="_blank">DIVSIG UGM</a>'
+            });
+        var basemap4 = L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png', {
+            attribution: '&copy; <a href="https://stadiamaps.com/">Stadia Maps</a>, &copy; <a href="https://openmaptile s.org/">OpenMapTiles</a> &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors'
+        });
+        basemap1.addTo(map);
+
+        /* Control Layer */
+        var baseMaps = {
+            "OpenStreetMap": basemap1,
+            "Esri World Street": basemap2,
+            "Esri Imagery": basemap3,
+            "Stadia Dark Mode": basemap4
+        };
+
+        var overlayMaps = {
+
+        };
+
+        L.control.layers(baseMaps, overlayMaps, { collapsed: false }).addTo(map);
+
+        /* Scale Bar */
+        L.control.scale({
+            maxWidth: 150, position: 'bottomright'
+        }).addTo(map);
+        var wfsgeoserver1 = L.geoJson(null, {
+            pointToLayer: function (feature, latlng) {
+                return L.marker(latlng, {
+                    
+                });
+            },
+            onEachFeature: function (feature, layer) {
+                /* Variabel content untuk memanggil atribut dari data file geojson */
+                var content = "Kapanewon : " + feature.properties.kecamatan + "<br>" +
+                    "Kabupaten : " + "Sleman" + "<br>" +
+                    "Provinsi : " + "Daerah Istimewa Yogyakarta";
+                layer.on({
+                    click: function (e) { //Fungsi ketika icon simbol di-klik
+                        wfsgeoserver1.bindPopup(content);
+                    },
+                    mouseover: function (e) {
+                        wfsgeoserver1.bindTooltip(feature.properties.kecamatan);
+                    },
+                    mouseout: function (e) {
+                        wfsgeoserver1.closePopup();
+                    }
+                });
+            }
+        });
+
+        /* Image Watermark */
+        L.Control.Watermark = L.Control.extend({
+            onAdd: function (map) {
+                var img = L.DomUtil.create("img");
+                img.src = "assets/img/logo/LOGO.jpg";
+                img.style.width = "200px";
+                img.style.marginBottom = "20px";
+                return img;
+            },
+        });
+
+        L.control.watermark = function (opts) {
+            return new L.Control.Watermark(opts);
+        };
+
+        L.control.watermark({ position: "topright" }).addTo(map);
+
+        /* Image Legend */
+        // L.Control.Legend = L.Control.extend({
+        //     onAdd: function (map) {
+        //         var img = L.DomUtil.create('img');
+        //         img.src = 'assets/img/legend/legendaa.png';
+        //         img.style.width = '200px';
+        //         return img;
+        //     }
+        // });
+
+        // L.control.Legend = function (opts) {
+        //     return new L.Control.Legend(opts);
+        // }
+
+        // L.control.Legend({ position: 'topright' }).addTo(map);
+
+        /*Plugin Geolocation */
+        var locateControl = L.control
+            .locate({
+                position: "topleft",
+                drawCircle: true,
+                follow: true,
+                setView: true,
+                keepCurrentZoomLevel: false,
+                markerStyle: {
+                    weight: 1,
+                    opacity: 0.8,
+                    fillOpacity: 0.8,
+                },
+                circleStyle: {
+                    weight: 1,
+                    clickable: false,
+                },
+                icon: "fas fa-crosshairs",
+                metric: true,
+                strings: {
+                    title: "Click for Your Location",
+                    popup: "You're here. Accuracy {distance} {unit}",
+                    outsideMapBoundsMsg: "Not available",
+                },
+                locateOptions: {
+                    maxZoom: 16,
+                    watch: true,
+                    enableHighAccuracy: true,
+                    maximumAge: 10000,
+                    timeout: 10000,
+                },
+            })
+            .addTo(map);
+
+        /*Plugin Mouse Position Coordinate */
+        L.control.mousePosition({ position: "topleft", separator: ",", prefix: "Point Coodinate: " }).addTo(map);
+
+        /*Plugin Measurement Tool */
+        var measureControl = new L.Control.Measure({
+            position: "topleft",
+            primaryLengthUnit: "meters",
+            secondaryLengthUnit: "kilometers",
+            primaryAreaUnit: "hectares",
+            secondaryAreaUnit: "sqmeters",
+            activeColor: "#FF0000",
+            completedColor: "#00FF00",
+        });
+        measureControl.addTo(map);
+
+        /*Plugin EasyPrint */
+        L.easyPrint({
+            title: "Print",
+        }).addTo(map);
+
+        // Membuat ikon marker dengan warna kuning
+        var yellowIcon = new L.Icon({
+            iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-yellow.png',
+            iconSize: [25, 41],
+            iconAnchor: [12, 41],
+            popupAnchor: [1, -34],
+            shadowSize: [41, 41]
+        });
+
+        // Menyesuaikan opsi ikon pada plugin Routing
+        L.Routing.control({
+    waypoints: [
+        L.latLng(-7.8340, 110.4000),
+        L.latLng(-7.8450, 110.4035)
+    ],
+    routeWhileDragging: true,
+    createMarker: function (i, waypoint, n) {
+        var marker = L.marker(waypoint.latLng, {
+            draggable: true,
+            icon: yellowIcon
+        });
+
+        if (i === 0 || i === n - 1) {
+            marker.bindPopup('Titik Rute ' + (i + 1)).openPopup();
+        }
+
+        marker.on('dragend', function (event) {
+            // Handle dragend event
+        });
+
+        return marker;
+    },
+    fitSelectedRoutes: false // Menetapkan fitSelectedRoutes menjadi false
+}).addTo(map);
+
+        /*Layer Marker*/
+        var addressPoints = [
+            [-7.107930498163027, 109.7315807827104, "Black Canyon, Petungkriyono"],
+            [-7.029562852672417, 109.68535465522218, "Amaranthy Cafe and Resto"],
+            [-6.968930941761928, 109.65472911485583, "Seblak Ceker Metal, Kedungwuni"],
+            [-6.969152316524252, 109.64816284890516, "Mixue Kedungwuni"],
+            [-6.981383172727805, 109.65636098487057, "Sextor's Cafe"],
+            [-6.960033764383956, 109.64769417538463, "Baso Aci Mavin, Kedungwuni"],
+            [-6.901789383116542, 109.66485059355612, "XXI Movie, Richeese Factory | Transmart Pekalongan"],
+            [-6.90242471640873, 109.66418854271936, "Mie Gacoan Pekalongan"],
+            [-6.901570532383955, 109.65419189479867, "Warmindo GARWO Pekalongan"],
+            [-6.88616969665036, 109.76755980160377, "Kawasan Pantai Depok, Batang-Pekalongan"],
+            [-6.878107315656235, 109.67171845272529, "Jajanan depan SMA N 3 Pekalongan"],
+            [-6.901477944989872, 109.68225939713828, "XXI Movie, KFC Box | Ramayana Pekalongan"],
+            [-6.884038555727841, 109.67279837885047, "Es Campur Durian Pak Suudi"],
+            [-6.887694574851744, 109.67987469012223, "Kopi Candu Pekalongan"],
+            [-6.890026414875782, 109.67902549616242, "Kids Fun Toserba Yogya"],
+            [-6.89539286358933, 109.67905845272529, "Toserba Yogya"],
+            [-6.960861428642789, 109.64018721038032, "Mie Peloor Kedungwuni"],
+            [-7.415579481423511, 109.92299806871597, "Alisan Farm | Tempatmu Magang"],
+            [-7.918998015449874, 110.07759129628995, "Pantai Glagah Kulonprogo | Bareng Pina dan Pacarnya"],
+            [-8.024590191266501, 110.32980446176626, "Pantai Parangtritis Bantul | Bareng Mba Novi & Setelah UAS Semester 3"],
+            [-7.60145094309761, 110.43284439219852, "Tankaman Natural Park Kaliurang"],
+            [-7.600745320427391, 110.42687274327083, "Lavana Restaurant"],
+            [-7.7564179772043005, 110.37410045614986, "Warung Makan Warsi, Pandega Marta, DIY"],
+            [-7.756192739708238, 110.37401060214962, "Bento Kopi Pogung, DIY"],
+            [-7.756360784099713, 110.37129725685547, "Modami Spicy Ramen dan Udon"],
+            [-7.761932539792514, 110.37307654604162, "Warung Pak Imam Favorit hahaha"],
+            [-7.757035878449033, 110.37481091230524, "Preksu Pandega wkwkw kalo bingung mau makan apa"],
+            [-7.75759816100513, 110.38040959266955, "Laundry langganan kita sayang, deket kosmu wkwk"],
+            [-7.767846464634276, 110.38533889028817, "Fakultas Peternakan UGM"],
+            [-7.774888211067553, 110.37452587941837, "Departemen Teknologi Kebumian | SV | UGM"],
+            [-7.77636669718669, 110.37440080449888, "Mirota Kampus Simanjuntak"],
+            [-7.771351838634345, 110.3775310481969, "Lapangan Pancasila UGM"],
+            [-7.752919807643699, 110.38463420280172, "Mirota Kampus Kaliurang"],
+            [-7.758812201955641, 110.39926372200054, "Pakuwon Mall Jogja"],
+            [-7.753241864819946, 110.36091122461639, "Jogja City Mall | JCM"],
+            [-7.782582482029759, 110.40109384300584, "Ambarukmo Plaza Jogja"],
+            [-7.783120290334003, 110.43720396613642, "Hotel Platinum Adisucipto"],
+            [-7.75744478909392, 110.38097543005648, "Kosmu | Kos Gang Jeruk Tercinta"],
+            [-7.758134396251735, 110.37652599090202, "Kosku Sayang hehehe"],
+            [-7.7561133395890955, 110.3758232443938, "Homwok Pogung"],
+            [-7.756459608455931, 110.38259528740299, "Sintesis Cafe and Space"],
+            [-7.7828263956494155, 110.37911248604038, "Galeria Mall Yogyakarta"],
+            [-7.811874587742171, 110.36320752527749, "Alun-Alun Kidul Yogyakarta"],
+            [-7.7818714470136845, 110.56738746080853, "Rumah Syifa Temenmu Sayang"],
+            [-7.688685401668939, 110.56130828411166, "Umbul Brintik, Klaten"],
+            [-7.813660792206852, 110.37629475550301, "Toean Watiman, Taman Siswa"],
+            [-7.762526399012126, 110.37967533219604, "McDonald's Kaliurang"],
+            [-7.763139523191075, 110.37978483487406, "Kuki Bakery Kaliurang"],
+            [-7.759318765329138, 110.38134810483753, "Seblak Pasta Kaliurang"],
+            [-7.763755092230692, 110.39335580325624, "Mie Gacoan Gejayan"],
+            [-7.762781339547091, 110.39399517163311, "Mie Goceng Gejayan"],
+            [-7.761496695820176, 110.39428646799568, "Mie Ayam Jakarta Pak Acong"],
+            [-7.750560110574263, 110.40020347590259, "Angkringan Anggajaya"],
+            [-7.772734334043947, 110.37499615954185, "Gadjah Mada Medical Center | GMC"],
+            [-7.772982724324318, 110.37532281346503, "ATM BNI Kaliurang deket SV"],
+            [-7.770756594163236, 110.37645278263032, "Lesehan Tasikmalaya"],
+            [-7.758701232427485, 110.38184818955718, "Warung Ibuk wkwkwk"],
+            [-7.726133041289915, 110.31733729607099, "GoatDay | Tempat Magangmu Sayang"],
+            [-7.800115741232449, 110.3534062569132, "ArtJog"],
+            [-7.793166472670601, 110.36703527137468, "Malioboro Mall"],
+            [-7.765737194624669, 110.37889175014726, "Mie Ayam dan Bakso Jalan Agro"],
+            [-7.766585177135658, 110.38078251568672, "Lamongan Cak  Anto, Kehutanan"],
+            [-7.7596404619576065, 110.36172587435905, "Lamongan Pak Kumis, Jalan Magelang"]
+
+        ];
+
+        var markers = L.markerClusterGroup();
+
+        for (var i = 0; i < addressPoints.length; i++) {
+            var a = addressPoints[i];
+            var title1 = a[2];
+
+            // Use a red marker icon
+            var redIcon = L.icon({
+                iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
+                iconSize: [25, 41],
+                iconAnchor: [12, 41],
+                popupAnchor: [1, -34],
+                shadowSize: [41, 41]
+            });
+
+            var marker = L.marker(new L.LatLng(a[0], a[1]), {
+                title: title1,
+                icon: redIcon // Set the custom red marker icon
+            });
+
+            marker.bindPopup(title1);
+            markers.addLayer(marker);
+        }
+
+        map.addLayer(markers);
+
+        // Audio
+        document.addEventListener('DOMContentLoaded', function () {
+    // Cek apakah elemen audio ada
+    var backgroundMusic = parent.document.getElementById('backgroundMusic');
+
+    // Periksa apakah elemen audio ditemukan sebelum mencoba mengakses dan mengonfigurasi
+    if (backgroundMusic) {
+        // Ambil durasi audio dari sessionStorage saat halaman dimuat
+        var storedAudioDuration = sessionStorage.getItem('audioDuration');
+
+        // Cek apakah storedAudioDuration bernilai valid dan lebih besar dari 0
+        if (storedAudioDuration !== null && !isNaN(parseFloat(storedAudioDuration)) && parseFloat(storedAudioDuration) > 0) {
+            // Mainkan audio dari durasi yang disimpan
+            backgroundMusic.currentTime = parseFloat(storedAudioDuration);
+            backgroundMusic.play();
+        }
+
+        // Simpan durasi audio ke sessionStorage saat meninggalkan halaman
+        window.addEventListener('beforeunload', function () {
+            sessionStorage.setItem('audioDuration', backgroundMusic.currentTime);
+        });
+    }
+});
+
+
+
+
+    </script>
+</body>
+
+</html>

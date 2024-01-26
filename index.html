@@ -32,72 +32,97 @@
 
 <body>
 
+  <audio id="backgroundMusic" autoplay loop>
+    <source src="assets/img/portfolio/audiosurgakukamu.mp3" type="audio/mp3">
+  </audio>
+
+  <script>
+  document.addEventListener('DOMContentLoaded', function () {
+    var backgroundMusic = document.getElementById('backgroundMusic');
+    var videoContents = document.querySelectorAll('#videoUcapan, #videoucapan'); // Pilih elemen berdasarkan ID
+    var isVideoPlaying = false;
+    var audioPausedTime = 0;
+
+    // Memeriksa apakah ada durasi audio yang disimpan di sessionStorage
+    var storedAudioDuration = sessionStorage.getItem('audioDuration');
+    
+    // Cek apakah storedAudioDuration bernilai valid dan lebih besar dari 0
+    if (storedAudioDuration !== null && parseFloat(storedAudioDuration) > 0) {
+        backgroundMusic.currentTime = parseFloat(storedAudioDuration);
+    }
+
+    function playAudio() {
+        console.log("playAudio called");
+        if (!isVideoPlaying) {
+            if (backgroundMusic.paused && !backgroundMusic.muted) {
+                backgroundMusic.play();
+            }
+        }
+    }
+
+    // Panggil fungsi untuk memainkan audio saat halaman dimuat
+    playAudio();
+
+    document.addEventListener('click', playAudio);
+    document.addEventListener('touchstart', playAudio);
+
+    // Atur volume audio saat video dimulai
+    videoContents.forEach(function (videoContent) {
+        videoContent.addEventListener('play', function () {
+            console.log("Video started playing");
+            isVideoPlaying = true;
+            backgroundMusic.volume = 0.2; // Sesuaikan dengan kebutuhan Anda
+            videoContent.volume = 1; // Sesuaikan dengan kebutuhan Anda
+        });
+
+        // Atur volume audio saat video dijeda atau dihentikan
+        videoContent.addEventListener('pause', function () {
+            console.log("Video paused");
+            isVideoPlaying = false;
+            backgroundMusic.volume = 0.4; // Sesuaikan dengan kebutuhan Anda
+            audioPausedTime = backgroundMusic.currentTime;
+        });
+
+        // Saat video selesai, set background music ke volume semula
+        videoContent.addEventListener('ended', function () {
+            console.log("Video ended");
+            backgroundMusic.volume = 0.4; // Sesuaikan dengan kebutuhan Anda
+        });
+    });
+
+    // Tangani pengaturan audio untuk ketidakaktifan suara oleh pengguna
+    document.addEventListener('keydown', function (event) {
+        if (event.key === 'M' || event.key === 'm') {
+            console.log("Toggle mute");
+            backgroundMusic.muted = !backgroundMusic.muted;
+        }
+    });
+
+    window.addEventListener('beforeunload', function () {
+        if (!isVideoPlaying) {
+            console.log("Saving audio duration");
+            sessionStorage.setItem('audioDuration', audioPausedTime);
+        }
+    });
+});
+
+
+  </script>
   <!-- ======= Header ======= -->
   <header id="header" class="fixed-top header-transparent">
     <div class="container d-flex align-items-center justify-content-between position-relative">
 
       <div class="logo">
-        <h1 class="text-light"><a href="index.html"><span>Turning 20!</span></a></h1>
+        <h1 class="text-light"><a href="index.html"><span>Happy Turning 20!</span></a></h1>
       </div>
 
       <nav id="navbar" class="navbar">
         <ul>
           <li><a class="nav-link scrollto active" href="#hero">Home</a></li>
-          <li><a class="nav-link scrollto" href="#about">About Us</a></li>
           <li><a class="nav-link scrollto" href="#portfolio">History</a></li>
           <li><a class="nav-link scrollto" href="#team">Dari Mereka</a></li>
-          <li class="dropdown"><a href="#"><span>Drop Down</span> <i class="bi bi-chevron-down"></i></a>
-            <ul>
-              <li><a href="#">Drop Down 1</a></li>
-              <li class="dropdown"><a href="#"><span>Deep Drop Down</span> <i class="bi bi-chevron-right"></i></a>
-                <ul>
-                  <li><a href="#">Deep Drop Down 1</a></li>
-                  <li><a href="#">Deep Drop Down 2</a></li>
-                  <li><a href="#">Deep Drop Down 3</a></li>
-                  <li><a href="#">Deep Drop Down 4</a></li>
-                  <li><a href="#">Deep Drop Down 5</a></li>
-                </ul>
-              </li>
-              <li><a href="#">Drop Down 2</a></li>
-              <li><a href="#">Drop Down 3</a></li>
-              <li><a href="#">Drop Down 4</a></li>
-            </ul>
-          </li>
-          <li class="dropdown megamenu"><a href="#"><span>Mega Menu</span> <i class="bi bi-chevron-down"></i></a>
-            <ul>
-              <li>
-                <strong>Column 1</strong>
-                <a href="#">Column 1 link 1</a>
-                <a href="#">Column 1 link 2</a>
-                <a href="#">Column 1 link 3</a>
-              </li>
-              <li>
-                <strong>Column 2</strong>
-                <a href="#">Column 2 link 1</a>
-                <a href="#">Column 2 link 2</a>
-                <a href="#">Column 3 link 3</a>
-              </li>
-              <li>
-                <strong>Column 3</strong>
-                <a href="#">Column 3 link 1</a>
-                <a href="#">Column 3 link 2</a>
-                <a href="#">Column 3 link 3</a>
-              </li>
-              <li>
-                <strong>Column 4</strong>
-                <a href="#">Column 4 link 1</a>
-                <a href="#">Column 4 link 2</a>
-                <a href="#">Column 4 link 3</a>
-              </li>
-              <li>
-                <strong>Column 5</strong>
-                <a href="#">Column 5 link 1</a>
-                <a href="#">Column 5 link 2</a>
-                <a href="#">Column 5 link 3</a>
-              </li>
-            </ul>
-          </li>
-          <li><a class="nav-link scrollto" href="#contact">Contact</a></li>
+          <li><a class="nav-link scrollto" href="maps.html">Maps</a></li>
+          <li><a class="nav-link scrollto" href="porto.html">About Me</a></li>
         </ul>
         <i class="bi bi-list mobile-nav-toggle"></i>
       </nav><!-- .navbar -->
@@ -110,8 +135,8 @@
     <div class="hero-container" data-aos="fade-up">
       <h1><span class="typed" data-typed-items="Welcome Sayangku, Thalita Cantik!"></span></h1>
       <p>Hai Cantik, ini mungkin sedikit yang bisa aku buat sebagai kenang-kenangan dan aku harap disimpan dan
-        diarsipkan dengan baik ya sayangku.
-        Selamat bertambah usia yang ke-20 ya sayang, pesanku jangan menyerah hidup
+        diarsipkan dengan baik ya sayangku.</p>
+      <P>Selamat bertambah usia yang ke-20 ya sayang, pesanku jangan menyerah hidup
         karena masih banyak cita-citamu yang perlu diwujudkan.</p>
       <a href="#about" class="btn-get-started scrollto"><i class="bx bx-chevrons-down"></i></a>
     </div>
@@ -122,47 +147,78 @@
     <!-- ======= About Section ======= -->
     <section id="about" class="about">
       <div class="container">
-
-        <div class="row no-gutters">
-          <div class="content col-xl-5 d-flex align-items-stretch" data-aos="fade-up">
-            <div class="content">
-              <h3>Voluptatem dignissimos provident quasi</h3>
-              <p>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et
-                dolore magna aliqua. Duis aute irure dolor in reprehenderit
-              </p>
-              <a href="#" class="about-btn">About us <i class="bx bx-chevron-right"></i></a>
-            </div>
-          </div>
-          <div class="col-xl-7 d-flex align-items-stretch">
-            <div class="icon-boxes d-flex flex-column justify-content-center">
-              <div class="row">
-                <div class="col-md-6 icon-box" data-aos="fade-up" data-aos-delay="100">
-                  <i class="bx bx-receipt"></i>
-                  <h4>Corporis voluptates sit</h4>
-                  <p>Consequuntur sunt aut quasi enim aliquam quae harum pariatur laboris nisi ut aliquip</p>
-                </div>
-                <div class="col-md-6 icon-box" data-aos="fade-up" data-aos-delay="200">
-                  <i class="bx bx-cube-alt"></i>
-                  <h4>Ullamco laboris nisi</h4>
-                  <p>Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt</p>
-                </div>
-                <div class="col-md-6 icon-box" data-aos="fade-up" data-aos-delay="300">
-                  <i class="bx bx-images"></i>
-                  <h4>Labore consequatur</h4>
-                  <p>Aut suscipit aut cum nemo deleniti aut omnis. Doloribus ut maiores omnis facere</p>
-                </div>
-                <div class="col-md-6 icon-box" data-aos="fade-up" data-aos-delay="400">
-                  <i class="bx bx-shield"></i>
-                  <h4>Beatae veritatis</h4>
-                  <p>Expedita veritatis consequuntur nihil tempore laudantium vitae denat pacta</p>
-                </div>
-              </div>
-            </div><!-- End .content-->
+        <div class="card col-lg-4 col-md-6 portfolio-item filter-app">
+          <div class="container">
+            <h4>
+              <a>
+              <b>Fun Fact Sayangku Thalita Nibrastsany!!</b>
+              </a>
+            </h4>
+            <h5>
+              Disclaimer kalo salah mohon maaf hehe >.<
+            </h5>
+            <p>
+              1. Bubub gasuka makanan dan minuman yang terlalu manis
+            </p>
+            </p>
+              2. Bubub gak terlalu suka sama coklat, kit-kat tapi mau wkwk
+            </p>
+            <p>
+              3. Bubub paling suka quality time bareng
+            </p>
+            <p>
+              4. Bubub gasuka aku cuekin hehe
+            </p>
+            <p>
+              5. Bubub suaranya bagus, aku sering dengerin dan suka kalo bubub nyanyi!
+            </p>
+            <p>
+              6. Bubub itu cantik banget makannya punya mantan dan hts-an nya lumayan banyak katanya wkwk
+            </p>
+            <p>
+              7. Bubub suka ikan, ayam, seafood kecuali udang karena ada riwayat alergi makannya aku perlu ingetin bubub buat hindarin udang berlebihan
+            </p>
+            <p>
+              8. Bubub keras kepala kalo diingetin gaboleh mam mie kebanyakan huuuu, jadinya aku yg ngalah deh gapapa
+            </p>
+            <p>
+              9. Bubub suka bangun jam 3 pagi loh guyss, kalo lagi sleep call suka bangunin subuh aku hehe kalau aku gak bangun nanti aku dicuekin dan dibahas seharian tuh wkwk
+            </p>
+            <p>
+              10. Bubub gaboleh kebanyakan minum kopi, dia ada riwayat asam lambung aku perlu ingetin itu
+            </p>
+            <p>
+              11. Bubub orangnya ambis guyss tapi diem-diem gitu mengerikan dan aku bangga punya bubub
+            </p>
+            <p>
+              12. Bubub gak malu kalo lagi makan bareng suka 'tengkreng' satu kakinya wkwk tapi gapapa udah terima bubub apa adanya
+            </p>
+            <p>
+              13. Bubub kalau lagi makan yang ada sambalnya, setiap di akhir selesai makan suka gadoin itu sambalnya dicemilin gatau heran
+            </p>
+            <p>
+              14. Bubub suka makan pedes banget kebalikan dari aku
+            </p>
+            <p>
+              15. Bubub gasuka buah pisang, kecuali yang udah diolah
+            </p>
+            <p>
+              16. Bubub sering banget makan tapi porsi sedikit dalam frekuensi yang cukup banyak guyss
+            </p>
+            <p>
+              17. Bubub suka banget sama boci, seblak wkwk gatau kenapa ya kok suka
+            </p>
+            <p>
+              18. Bubub orangnya gampang kebawa emosi dan moodswing guyss wkwk jadinya harus pinter-pinter jaga moodnya Bubub
+            </p>
+            <p>
+              19. Bubub ditembak aku buat izin jadi pacarnya lewat call pagi hari dan aku buatin playlist spotify khusus bubub wlee
+            </p>
+            <p>
+              20. Bubub suka peluk aku waktu riding, dan isengin aku dimanapun kapanpun :)
+            </p>
           </div>
         </div>
-
-      </div>
     </section><!-- End About Section -->
 
     <!-- ======= Portfolio Section ======= -->
@@ -171,7 +227,8 @@
 
         <div class="section-title" data-aos="fade-in" data-aos-delay="100">
           <h2>History</h2>
-          <p>Beberapa dokumentasi tentang kamu dan kita yang coba aku rangkum di halaman ini.</p>
+          <p>Beberapa dokumentasi tentang kamu dan kita yang coba aku rangkum di halaman ini. Jangan lupa diperbesar dan
+            dibaca deskripsinya ya Sayang dengan klik <i>icon</i> '+' yang berada di tengah <i>frame</i> foto.</p>
         </div>
 
         <div class="row portfolio-container" data-aos="fade-up">
@@ -181,7 +238,7 @@
               <img src="assets/img/portfolio/foto1.jpeg" class="img-fluid" alt="">
               <div class="portfolio-links">
                 <a href="assets/img/portfolio/foto1.jpeg" data-gallery="portfolioGallery" class="portfolio-lightbox"
-                  title="ppp"><i class="bx bx-plus"></i></a>
+                  title="Ini waktu kita pertama kali video call, masyaallah kamu cantik banget sayang bikin aku baper waktu itu hahaha."></i></a>
               </div>
             </div>
           </div>
@@ -191,7 +248,8 @@
               <img src="assets/img/portfolio/foto2.jpeg" class="img-fluid" alt="">
               <div class="portfolio-links">
                 <a href="assets/img/portfolio/foto2.jpeg" data-gallery="portfolioGallery" class="portfolio-lightbox"
-                  title="ppp"><i class="bx bx-plus"></i></a>
+                  title="Waktu aku minta call dini hari, sebenernya modus aja ke kamu buat bangunin aku untuk persiapan hari pertama PPSMB."><i
+                    class="bx bx-plus"></i></a>
               </div>
             </div>
           </div>
@@ -201,7 +259,8 @@
               <img src="assets/img/portfolio/foto3.jpeg" class="img-fluid" alt="">
               <div class="portfolio-links">
                 <a href="assets/img/portfolio/foto3.jpeg" data-gallery="portfolioGallery" class="portfolio-lightbox"
-                  title="ppp"><i class="bx bx-plus"></i></a>
+                  title="Foto bareng pertama kali setelah ambil almamater bareng, firts time aku boncengin kamu dan masih canggung hahaha."><i
+                    class="bx bx-plus"></i></a>
               </div>
             </div>
           </div>
@@ -211,7 +270,8 @@
               <img src="assets/img/portfolio/foto4.jpeg" class="img-fluid" alt="">
               <div class="portfolio-links">
                 <a href="assets/img/portfolio/foto4.jpeg" data-gallery="portfolioGallery" class="portfolio-lightbox"
-                  title="ppp"><i class="bx bx-plus"></i></a>
+                  title="Salah satu yang sangat random, bisa dibilang date h-1 sebelum aku nembak kamu besok paginya. Ini di Maliobro dan kita saling sharing satu sama lain."><i
+                    class="bx bx-plus"></i></a>
               </div>
             </div>
           </div>
@@ -221,7 +281,8 @@
               <img src="assets/img/portfolio/foto5.jpeg" class="img-fluid" alt="">
               <div class="portfolio-links">
                 <a href="assets/img/portfolio/foto5.jpeg" data-gallery="portfolioGallery" class="portfolio-lightbox"
-                  title="ppp"><i class="bx bx-plus"></i></a>
+                  title="Pertama kali date yang resmi setelah jadian hahaha, aku nembak kamu paginya dan siangan dikit kita nonton, cukup absurd but ginipun salah satu bentuk rasa cinta kita hahaha."><i
+                    class="bx bx-plus"></i></a>
               </div>
             </div>
           </div>
@@ -231,450 +292,669 @@
               <img src="assets/img/portfolio/foto6.jpeg" class="img-fluid" alt="">
               <div class="portfolio-links">
                 <a href="assets/img/portfolio/foto6.jpeg" data-gallery="portfolioGallery" class="portfolio-lightbox"
-                  title="ppp"><i class="bx bx-plus"></i></a>
+                  title="Gelex Date Part 1 setelah kita resmi pacaran, Sayang. Aku sayang kamu."><i
+                    class="bx bx-plus"></i></a>
               </div>
             </div>
           </div>
 
           <div class="col-lg-4 col-md-6 portfolio-item filter-app">
             <div class="portfolio-wrap">
-              <img src="assets/img/portfolio/foto1.jpeg" class="img-fluid" alt="">
+              <img src="assets/img/portfolio/foto7.jpg" class="img-fluid" alt="">
               <div class="portfolio-links">
-                <a href="assets/img/portfolio/foto1.jpeg" data-gallery="portfolioGallery" class="portfolio-lightbox"
-                  title="ppp"><i class="bx bx-plus"></i></a>
+                <a href="assets/img/portfolio/foto7.jpg" data-gallery="portfolioGallery" class="portfolio-lightbox"
+                  title="Gelex Date Part 2 di tahun keduanya diselenggarakan selama kita kuliah di UGM, Sayang. Semoga kita langgeng terus ya sayang apapun yang dihadapi semoga bisa dilalui bersama, aamiin."><i
+                    class="bx bx-plus"></i></a>
               </div>
             </div>
           </div>
 
           <div class="col-lg-4 col-md-6 portfolio-item filter-app">
             <div class="portfolio-wrap">
-              <img src="assets/img/portfolio/foto1.jpeg" class="img-fluid" alt="">
+              <img src="assets/img/portfolio/foto8.jpeg" class="img-fluid" alt="">
               <div class="portfolio-links">
-                <a href="assets/img/portfolio/foto1.jpeg" data-gallery="portfolioGallery" class="portfolio-lightbox"
-                  title="ppp"><i class="bx bx-plus"></i></a>
+                <a href="assets/img/portfolio/foto8.jpeg" data-gallery="portfolioGallery" class="portfolio-lightbox"
+                  title="Perayaan setelah kamu UTS Mata Kuliah Bahasa Indonesia kalau tidak salah sayang, kita mengerjakan di Starbucks dan lanjut nge-Mall. Sukses terus sayang hidupmu, aamiin."><i
+                    class="bx bx-plus"></i></a>
               </div>
             </div>
           </div>
 
           <div class="col-lg-4 col-md-6 portfolio-item filter-app">
             <div class="portfolio-wrap">
-              <img src="assets/img/portfolio/foto1.jpeg" class="img-fluid" alt="">
+              <img src="assets/img/portfolio/foto9.jpeg" class="img-fluid" alt="">
               <div class="portfolio-links">
-                <a href="assets/img/portfolio/foto1.jpeg" data-gallery="portfolioGallery" class="portfolio-lightbox"
-                  title="ppp"><i class="bx bx-plus"></i></a>
+                <a href="assets/img/portfolio/foto9.jpeg" data-gallery="portfolioGallery" class="portfolio-lightbox"
+                  title="Bagian dari Self Reward mu, Sayang. Setelah nge-Mall itu kita lanjut ke Museum Sonobudoyo sore harinya dan ini aku bener-bener enjoy, terima kasih sudah mengajakku Sayang."><i
+                    class="bx bx-plus"></i></a>
               </div>
             </div>
           </div>
 
           <div class="col-lg-4 col-md-6 portfolio-item filter-app">
             <div class="portfolio-wrap">
-              <img src="assets/img/portfolio/foto1.jpeg" class="img-fluid" alt="">
+              <img src="assets/img/portfolio/foto10.jpeg" class="img-fluid" alt="">
               <div class="portfolio-links">
-                <a href="assets/img/portfolio/foto1.jpeg" data-gallery="portfolioGallery" class="portfolio-lightbox"
-                  title="ppp"><i class="bx bx-plus"></i></a>
+                <a href="assets/img/portfolio/foto10.jpeg" data-gallery="portfolioGallery" class="portfolio-lightbox"
+                  title="Dokumentasi setelah membeli cake untuk ulang tahun temenmu, buat si Nava itu."><i
+                    class="bx bx-plus"></i></a>
               </div>
             </div>
           </div>
 
           <div class="col-lg-4 col-md-6 portfolio-item filter-app">
             <div class="portfolio-wrap">
-              <img src="assets/img/portfolio/foto1.jpeg" class="img-fluid" alt="">
+              <img src="assets/img/portfolio/foto11.jpeg" class="img-fluid" alt="">
               <div class="portfolio-links">
-                <a href="assets/img/portfolio/foto1.jpeg" data-gallery="portfolioGallery" class="portfolio-lightbox"
-                  title="ppp"><i class="bx bx-plus"></i></a>
+                <a href="assets/img/portfolio/foto11.jpeg" data-gallery="portfolioGallery" class="portfolio-lightbox"
+                  title="Nonton lagi, seingatku ini filmnya Kramat 2 dan kita melanjutkan perjalanan pulang ke Starbucks dan makan malam di lamongan depan kehutanan itu."><i
+                    class="bx bx-plus"></i></a>
               </div>
             </div>
           </div>
 
           <div class="col-lg-4 col-md-6 portfolio-item filter-app">
             <div class="portfolio-wrap">
-              <img src="assets/img/portfolio/foto1.jpeg" class="img-fluid" alt="">
+              <img src="assets/img/portfolio/foto12.jpeg" class="img-fluid" alt="">
               <div class="portfolio-links">
-                <a href="assets/img/portfolio/foto1.jpeg" data-gallery="portfolioGallery" class="portfolio-lightbox"
-                  title="ppp"><i class="bx bx-plus"></i></a>
+                <a href="assets/img/portfolio/foto12.jpeg" data-gallery="portfolioGallery" class="portfolio-lightbox"
+                  title="Nonton adalah comfort activities kita Sayang ya hahaha, waktu ini kalo gak salah filmnya Black Panther : Wakanda Forever."><i
+                    class="bx bx-plus"></i></a>
               </div>
             </div>
           </div>
 
           <div class="col-lg-4 col-md-6 portfolio-item filter-app">
             <div class="portfolio-wrap">
-              <img src="assets/img/portfolio/foto1.jpeg" class="img-fluid" alt="">
+              <img src="assets/img/portfolio/foto13.jpeg" class="img-fluid" alt="">
               <div class="portfolio-links">
-                <a href="assets/img/portfolio/foto1.jpeg" data-gallery="portfolioGallery" class="portfolio-lightbox"
-                  title="ppp"><i class="bx bx-plus"></i></a>
+                <a href="assets/img/portfolio/foto13.jpeg" data-gallery="portfolioGallery" class="portfolio-lightbox"
+                  title="Sewaktu kamu nemenin aku ngelaprak di UPNORMAL CAFE hahaha, sekarang cafenya masih ada gak ya? hihi pokoknya kamu itu Supporter Number One Sayang."><i
+                    class="bx bx-plus"></i></a>
               </div>
             </div>
           </div>
 
           <div class="col-lg-4 col-md-6 portfolio-item filter-app">
             <div class="portfolio-wrap">
-              <img src="assets/img/portfolio/foto1.jpeg" class="img-fluid" alt="">
+              <img src="assets/img/portfolio/foto14.jpeg" class="img-fluid" alt="">
               <div class="portfolio-links">
-                <a href="assets/img/portfolio/foto1.jpeg" data-gallery="portfolioGallery" class="portfolio-lightbox"
-                  title="ppp"><i class="bx bx-plus"></i></a>
+                <a href="assets/img/portfolio/foto14.jpeg" data-gallery="portfolioGallery" class="portfolio-lightbox"
+                  title="JJS alias Jalan-Jalan Sore kita ke Alkid Sayang, sambil membeli jajan dan menghabiskan waktu untuk mengobrol santai. Aku rindu suasana yang seperti ini Sayang huhuhu."><i
+                    class="bx bx-plus"></i></a>
               </div>
             </div>
           </div>
 
           <div class="col-lg-4 col-md-6 portfolio-item filter-app">
             <div class="portfolio-wrap">
-              <img src="assets/img/portfolio/foto1.jpeg" class="img-fluid" alt="">
+              <img src="assets/img/portfolio/foto15.jpeg" class="img-fluid" alt="">
               <div class="portfolio-links">
-                <a href="assets/img/portfolio/foto1.jpeg" data-gallery="portfolioGallery" class="portfolio-lightbox"
-                  title="ppp"><i class="bx bx-plus"></i></a>
+                <a href="assets/img/portfolio/foto15.jpeg" data-gallery="portfolioGallery" class="portfolio-lightbox"
+                  title="Sewaktu di Ichiban Sushi Sayang, masih dalam rangkaian kegiatan Self Rewardmu selepas UTS terakhir Bahasa Indonesia itu hehe love u Sayang."><i
+                    class="bx bx-plus"></i></a>
               </div>
             </div>
           </div>
 
           <div class="col-lg-4 col-md-6 portfolio-item filter-app">
             <div class="portfolio-wrap">
-              <img src="assets/img/portfolio/foto1.jpeg" class="img-fluid" alt="">
+              <img src="assets/img/portfolio/foto16.jpg" class="img-fluid" alt="">
               <div class="portfolio-links">
-                <a href="assets/img/portfolio/foto1.jpeg" data-gallery="portfolioGallery" class="portfolio-lightbox"
-                  title="ppp"><i class="bx bx-plus"></i></a>
+                <a href="assets/img/portfolio/foto16.jpg" data-gallery="portfolioGallery" class="portfolio-lightbox"
+                  title="Kalo ini Ichiban Sushi versi aku dan kamu masih marahan, aku sengaja bawa kamu kesini untuk ketemu biar kita baikan hehehe."><i
+                    class="bx bx-plus"></i></a>
               </div>
             </div>
           </div>
 
           <div class="col-lg-4 col-md-6 portfolio-item filter-app">
             <div class="portfolio-wrap">
-              <img src="assets/img/portfolio/foto1.jpeg" class="img-fluid" alt="">
+              <img src="assets/img/portfolio/foto17.jpg" class="img-fluid" alt="">
               <div class="portfolio-links">
-                <a href="assets/img/portfolio/foto1.jpeg" data-gallery="portfolioGallery" class="portfolio-lightbox"
-                  title="ppp"><i class="bx bx-plus"></i></a>
+                <a href="assets/img/portfolio/foto17.jpg" data-gallery="portfolioGallery" class="portfolio-lightbox"
+                  title="jago banget Sayang, bisa dapet Jackpot gitu hahaha waktu di Play Court Yogya Mall Pekalongan hahaha, aku excited banget loh Sayang!."><i
+                    class="bx bx-plus"></i></a>
               </div>
             </div>
           </div>
 
           <div class="col-lg-4 col-md-6 portfolio-item filter-app">
             <div class="portfolio-wrap">
-              <img src="assets/img/portfolio/foto1.jpeg" class="img-fluid" alt="">
+              <img src="assets/img/portfolio/foto18.jpg" class="img-fluid" alt="">
               <div class="portfolio-links">
-                <a href="assets/img/portfolio/foto1.jpeg" data-gallery="portfolioGallery" class="portfolio-lightbox"
-                  title="ppp"><i class="bx bx-plus"></i></a>
+                <a href="assets/img/portfolio/foto18.jpg" data-gallery="portfolioGallery" class="portfolio-lightbox"
+                  title="Akhirnya kita PhotoBox juga ya Sayang, aku seneng banget aku bisa jadi pacarmu hehehe."><i
+                    class="bx bx-plus"></i></a>
               </div>
             </div>
           </div>
 
           <div class="col-lg-4 col-md-6 portfolio-item filter-app">
             <div class="portfolio-wrap">
-              <img src="assets/img/portfolio/foto1.jpeg" class="img-fluid" alt="">
+              <img src="assets/img/portfolio/foto19.JPG" class="img-fluid" alt="">
               <div class="portfolio-links">
-                <a href="assets/img/portfolio/foto1.jpeg" data-gallery="portfolioGallery" class="portfolio-lightbox"
-                  title="ppp"><i class="bx bx-plus"></i></a>
+                <a href="assets/img/portfolio/foto19.JPG" data-gallery="portfolioGallery" class="portfolio-lightbox"
+                  title="Ngefotoin bidadari di Tankaman Park, Kaliurang. Selain pemandangannya yang cantik, kamu juga cantik dan gemesin Sayang."><i
+                    class="bx bx-plus"></i></a>
               </div>
             </div>
           </div>
 
           <div class="col-lg-4 col-md-6 portfolio-item filter-app">
             <div class="portfolio-wrap">
-              <img src="assets/img/portfolio/foto1.jpeg" class="img-fluid" alt="">
+              <img src="assets/img/portfolio/foto20.jpg" class="img-fluid" alt="">
               <div class="portfolio-links">
-                <a href="assets/img/portfolio/foto1.jpeg" data-gallery="portfolioGallery" class="portfolio-lightbox"
-                  title="ppp"><i class="bx bx-plus"></i></a>
+                <a href="assets/img/portfolio/foto20.jpg" data-gallery="portfolioGallery" class="portfolio-lightbox"
+                  title="Udah kaya prewed belum? hahaha ini waktu kita ke Pantai Parangtritis bareng Mba Novi juga Sayang."><i
+                    class="bx bx-plus"></i></a>
               </div>
             </div>
           </div>
 
           <div class="col-lg-4 col-md-6 portfolio-item filter-app">
             <div class="portfolio-wrap">
-              <img src="assets/img/portfolio/foto1.jpeg" class="img-fluid" alt="">
+              <img src="assets/img/portfolio/foto21.jpg" class="img-fluid" alt="">
               <div class="portfolio-links">
-                <a href="assets/img/portfolio/foto1.jpeg" data-gallery="portfolioGallery" class="portfolio-lightbox"
-                  title="ppp"><i class="bx bx-plus"></i></a>
+                <a href="assets/img/portfolio/foto21.jpg" data-gallery="portfolioGallery" class="portfolio-lightbox"
+                  title="Perayaan Anniversary hubungan kita yang 1 tahun di Toean Watiman Resto, aku harap kita bisa rayain Anniversary berikut-berikutnya kedepannya sama kamu. Aku sayang banget sama kamu."><i
+                    class="bx bx-plus"></i></a>
               </div>
             </div>
           </div>
 
           <div class="col-lg-4 col-md-6 portfolio-item filter-app">
             <div class="portfolio-wrap">
-              <img src="assets/img/portfolio/foto1.jpeg" class="img-fluid" alt="">
+              <img src="assets/img/portfolio/foto22.jpg" class="img-fluid" alt="">
               <div class="portfolio-links">
-                <a href="assets/img/portfolio/foto1.jpeg" data-gallery="portfolioGallery" class="portfolio-lightbox"
-                  title="ppp"><i class="bx bx-plus"></i></a>
+                <a href="assets/img/portfolio/foto22.jpg" data-gallery="portfolioGallery" class="portfolio-lightbox"
+                  title="Sewaktu di ArtJog Sayang bareng Mba Novi juga kalau tidak salah, nanti Museum Date lagi ya Sayang yuk, seruu!!"><i
+                    class="bx bx-plus"></i></a>
               </div>
             </div>
           </div>
 
           <div class="col-lg-4 col-md-6 portfolio-item filter-app">
             <div class="portfolio-wrap">
-              <img src="assets/img/portfolio/foto1.jpeg" class="img-fluid" alt="">
+              <img src="assets/img/portfolio/foto23.jpg" class="img-fluid" alt="">
               <div class="portfolio-links">
-                <a href="assets/img/portfolio/foto1.jpeg" data-gallery="portfolioGallery" class="portfolio-lightbox"
-                  title="ppp"><i class="bx bx-plus"></i></a>
+                <a href="assets/img/portfolio/foto23.jpg" data-gallery="portfolioGallery" class="portfolio-lightbox"
+                  title="Iseng cobain aplikasi kamera baru yang diunduh di HP-mu. Kamu udah cantik malah makin cantik banget Sayang."><i
+                    class="bx bx-plus"></i></a>
               </div>
             </div>
           </div>
 
           <div class="col-lg-4 col-md-6 portfolio-item filter-app">
             <div class="portfolio-wrap">
-              <img src="assets/img/portfolio/foto1.jpeg" class="img-fluid" alt="">
+              <img src="assets/img/portfolio/foto24.jpg" class="img-fluid" alt="">
               <div class="portfolio-links">
-                <a href="assets/img/portfolio/foto1.jpeg" data-gallery="portfolioGallery" class="portfolio-lightbox"
-                  title="ppp"><i class="bx bx-plus"></i></a>
+                <a href="assets/img/portfolio/foto24.jpg" data-gallery="portfolioGallery" class="portfolio-lightbox"
+                  title="Foto studio pertama kali kita Sayang, Next kita foto studio pake almamater ya Sayang hehehe seperti rencana yang pernah kita susun semoga terlaksana aamiin."><i
+                    class="bx bx-plus"></i></a>
               </div>
             </div>
           </div>
 
           <div class="col-lg-4 col-md-6 portfolio-item filter-app">
             <div class="portfolio-wrap">
-              <img src="assets/img/portfolio/foto1.jpeg" class="img-fluid" alt="">
+              <img src="assets/img/portfolio/foto25.jpg" class="img-fluid" alt="">
               <div class="portfolio-links">
-                <a href="assets/img/portfolio/foto1.jpeg" data-gallery="portfolioGallery" class="portfolio-lightbox"
-                  title="ppp"><i class="bx bx-plus"></i></a>
+                <a href="assets/img/portfolio/foto25.jpg" data-gallery="portfolioGallery" class="portfolio-lightbox"
+                  title="Menyibukkan diri dengan ikut kepanitiaan Berbagi Rasa 2023 di dalam divisi yang sama, divisi perkap hahaha. Aku sayang kamu."><i
+                    class="bx bx-plus"></i></a>
               </div>
             </div>
           </div>
 
           <div class="col-lg-4 col-md-6 portfolio-item filter-app">
             <div class="portfolio-wrap">
-              <img src="assets/img/portfolio/foto1.jpeg" class="img-fluid" alt="">
+              <img src="assets/img/portfolio/foto26.jpg" class="img-fluid" alt="">
               <div class="portfolio-links">
-                <a href="assets/img/portfolio/foto1.jpeg" data-gallery="portfolioGallery" class="portfolio-lightbox"
-                  title="ppp"><i class="bx bx-plus"></i></a>
+                <a href="assets/img/portfolio/foto26.jpg" data-gallery="portfolioGallery" class="portfolio-lightbox"
+                  title="Kita nonton lagi Sayang, tapi maaf aku gak ingat ini filmnya apa hehehe love u sayang."><i
+                    class="bx bx-plus"></i></a>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-4 col-md-6 portfolio-item filter-app">
+            <div class="portfolio-wrap">
+              <img src="assets/img/portfolio/foto27.jpg" class="img-fluid" alt="">
+              <div class="portfolio-links">
+                <a href="assets/img/portfolio/foto27.jpg" data-gallery="portfolioGallery" class="portfolio-lightbox"
+                  title="Kamu selalu nemenin aku ngelaprak dan berjuang bersama demi masa depan, ini ngelaprak di Homwok Pogung itu Sayang, Love u sayang."><i
+                    class="bx bx-plus"></i></a>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-4 col-md-6 portfolio-item filter-app">
+            <div class="portfolio-wrap">
+              <img src="assets/img/portfolio/foto28.jpg" class="img-fluid" alt="">
+              <div class="portfolio-links">
+                <a href="assets/img/portfolio/foto28.jpg" data-gallery="portfolioGallery" class="portfolio-lightbox"
+                  title="Masih seputar tergabung menjadi kepanitiaan Berbagi Rasa 2023 Sayang, kita dokumentasi ID Card kita berdua hahaha."><i
+                    class="bx bx-plus"></i></a>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-4 col-md-6 portfolio-item filter-app">
+            <div class="portfolio-wrap">
+              <img src="assets/img/portfolio/foto29.jpg" class="img-fluid" alt="">
+              <div class="portfolio-links">
+                <a href="assets/img/portfolio/foto29.jpg" data-gallery="portfolioGallery" class="portfolio-lightbox"
+                  title="Lagi dan lagi kamu nemenein aku ngelaprak dan belajar di Homwok Pogung, aku sayang kamu. Jasamu gak akan aku lupakan Sayang, I love you Sayang."><i
+                    class="bx bx-plus"></i></a>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-4 col-md-6 portfolio-item filter-app">
+            <div class="portfolio-wrap">
+              <img src="assets/img/portfolio/foto30.jpg" class="img-fluid" alt="">
+              <div class="portfolio-links">
+                <a href="assets/img/portfolio/foto30.jpg" data-gallery="portfolioGallery" class="portfolio-lightbox"
+                  title="Wawktu ke Black Canyon bareng-bareng temenmu juga yang main ke Pekalongan dan cobain kesini hahaha gemes juga ya kita."><i
+                    class="bx bx-plus"></i></a>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-4 col-md-6 portfolio-item filter-app">
+            <div class="portfolio-wrap">
+              <img src="assets/img/portfolio/foto31.jpg" class="img-fluid" alt="">
+              <div class="portfolio-links">
+                <a href="assets/img/portfolio/foto31.jpg" data-gallery="portfolioGallery" class="portfolio-lightbox"
+                  title="Waktu perjalanan kita ke Klaten Sayang, kerumah temenmu si Syifa tapi aku gak ingat ini ada keperluan apa hahaha aku sayang kamu."><i
+                    class="bx bx-plus"></i></a>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-4 col-md-6 portfolio-item filter-app">
+            <div class="portfolio-wrap">
+              <img src="assets/img/portfolio/foto32.jpg" class="img-fluid" alt="">
+              <div class="portfolio-links">
+                <a href="assets/img/portfolio/foto32.jpg" data-gallery="portfolioGallery" class="portfolio-lightbox"
+                  title="Waktu kita liburan ke Pantai di Batang dan pagi-pagi kita nikmatin Surise terus foto-foto seadanya karena gak ada yang ngefotoin hahaha love u sayang."><i
+                    class="bx bx-plus"></i></a>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-4 col-md-6 portfolio-item filter-app">
+            <div class="portfolio-wrap">
+              <img src="assets/img/portfolio/foto33.jpg" class="img-fluid" alt="">
+              <div class="portfolio-links">
+                <a href="assets/img/portfolio/foto33.jpg" data-gallery="portfolioGallery" class="portfolio-lightbox"
+                  title="Nonton lagi, emang bener-bener comfort activities kita ya Sayang kalo ada waktu senggang cukup lama."><i
+                    class="bx bx-plus"></i></a>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-4 col-md-6 portfolio-item filter-app">
+            <div class="portfolio-wrap">
+              <img src="assets/img/portfolio/foto34.jpg" class="img-fluid" alt="">
+              <div class="portfolio-links">
+                <a href="assets/img/portfolio/foto34.jpg" data-gallery="portfolioGallery" class="portfolio-lightbox"
+                  title="Finally, mencoba Golden Geisha Ramen, so far termasuk ramen yang direkomendasikan buat didatengin lagi hehehe."><i
+                    class="bx bx-plus"></i></a>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-4 col-md-6 portfolio-item filter-app">
+            <div class="portfolio-wrap">
+              <img src="assets/img/portfolio/foto35.jpg" class="img-fluid" alt="">
+              <div class="portfolio-links">
+                <a href="assets/img/portfolio/foto35.jpg" data-gallery="portfolioGallery" class="portfolio-lightbox"
+                  title="Abis UAS Semester 3 ke Pantai Parangtritis lagi ya Sayang hehehe kamunya cantik, lucu, gemesin banget lohh!!!."><i
+                    class="bx bx-plus"></i></a>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-4 col-md-6 portfolio-item filter-app">
+            <div class="portfolio-wrap">
+              <img src="assets/img/portfolio/foto36.jpg" class="img-fluid" alt="">
+              <div class="portfolio-links">
+                <a href="assets/img/portfolio/foto36.jpg" data-gallery="portfolioGallery" class="portfolio-lightbox"
+                  title="Ini waktu senjanya Sayang, cantik banget ya senjanya kaya kamu tapi kuharap kamu bukan senja yang indah sesaat lalu menghilang, aamiin Sayang."><i
+                    class="bx bx-plus"></i></a>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-4 col-md-6 portfolio-item filter-app">
+            <div class="portfolio-wrap">
+              <img src="assets/img/portfolio/foto37.jpg" class="img-fluid" alt="">
+              <div class="portfolio-links">
+                <a href="assets/img/portfolio/foto37.jpg" data-gallery="portfolioGallery" class="portfolio-lightbox"
+                  title="Mencoba ke Lavana Coffe and Resto Sayang, ini waktu salah satu Self Reward buat kamu dari aku karena sudah menjalai UAS Semester 3 dengan baik. Aku sayang kamu."><i
+                    class="bx bx-plus"></i></a>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-4 col-md-6 portfolio-item filter-app">
+            <div class="portfolio-wrap">
+              <img src="assets/img/portfolio/foto38.jpg" class="img-fluid" alt="">
+              <div class="portfolio-links">
+                <a href="assets/img/portfolio/foto38.jpg" data-gallery="portfolioGallery" class="portfolio-lightbox"
+                  title="Makan ramen lagi di RamenYA Sayang, sederhana but enak juga kok. Kamunya lucu banget bikin makin sayang aja tau gaa hehehe."><i
+                    class="bx bx-plus"></i></a>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-4 col-md-6 portfolio-item filter-app">
+            <div class="portfolio-wrap">
+              <img src="assets/img/portfolio/foto39.jpg" class="img-fluid" alt="">
+              <div class="portfolio-links">
+                <a href="assets/img/portfolio/foto39.jpg" data-gallery="portfolioGallery" class="portfolio-lightbox"
+                  title="Salah satu pap cantikmu ketika ngabarin aku, ini waktu kamu magang Sayang di Alisan Farm Wonosobo, semoga sukses terus ya Sayang karirmu kedepannya begitu juga aku hehehe aamiin Sayang."><i
+                    class="bx bx-plus"></i></a>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-4 col-md-6 portfolio-item filter-app">
+            <div class="portfolio-wrap">
+              <img src="assets/img/portfolio/foto40.jpg" class="img-fluid" alt="">
+              <div class="portfolio-links">
+                <a href="assets/img/portfolio/foto40.jpg" data-gallery="portfolioGallery" class="portfolio-lightbox"
+                  title="Merayakan Ulang Tahunmu ke 20 Sayang di Platinum Adisucipto Hotel lantai 10 hehehe, kita Fine Dining lagi ya Sayang nanti aku usahakan doakan aja ya Sayang aamiin Love You Sayang."><i
+                    class="bx bx-plus"></i></a>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-4 col-md-6 portfolio-item filter-app">
+            <div class="portfolio-wrap">
+              <video controls class="img-fluid">
+                <source src="assets/img/portfolio/video1.mp4" type="video/mp4">
+                Browser Anda tidak mendukung tag video.
+              </video>
+              <div class="portfolio-links">
+                <a href="assets/img/portfolio/video1.mp4" data-gallery="portfolioGallery" class="portfolio-lightbox"
+                  title="Video call sekian kalinya waktu awal-awal pacaran, kamu review dapet gift apa aja sewaktu hari terakhir PPSMB."><i
+                    class="bx bx-plus"></i></a>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-4 col-md-6 portfolio-item filter-app">
+            <div class="portfolio-wrap">
+              <video controls class="img-fluid">
+                <source src="assets/img/portfolio/video2.mp4" type="video/mp4">
+                Browser Anda tidak mendukung tag video.
+              </video>
+              <div class="portfolio-links">
+                <a href="assets/img/portfolio/video2.mp4" data-gallery="portfolioGallery" class="portfolio-lightbox"
+                  title="Random video waktu nunggu beli kwetiaw di deket Warung Jepun itu Sayang, kamu lucu bangetttt."><i
+                    class="bx bx-plus"></i></a>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-4 col-md-6 portfolio-item filter-app">
+            <div class="portfolio-wrap">
+              <video controls class="img-fluid">
+                <source src="assets/img/portfolio/video3.mp4" type="video/mp4">
+                Browser Anda tidak mendukung tag video.
+              </video>
+              <div class="portfolio-links">
+                <a href="assets/img/portfolio/video3.mp4" data-gallery="portfolioGallery" class="portfolio-lightbox"
+                  title="Sewaktu kita JJS alias Jalan Jalan Sore ke Alkid abis jajan terus ngobrol-ngobrol santai dan ringan saling dengerin satu sama lain, aku kangen suasana kaya gini sama kamu sampai kapanpun huhuhu."><i
+                    class="bx bx-plus"></i></a>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-4 col-md-6 portfolio-item filter-app">
+            <div class="portfolio-wrap">
+              <video controls class="img-fluid">
+                <source src="assets/img/portfolio/video4.mp4" type="video/mp4">
+                Browser Anda tidak mendukung tag video.
+              </video>
+              <div class="portfolio-links">
+                <a href="assets/img/portfolio/video4.mp4" data-gallery="portfolioGallery" class="portfolio-lightbox"
+                  title="Waktu di Tankaman Park, Kaliurang. Bikin video ala-ala romantis gitu dan cocok banget gak sih kita kaya pasangan suami-istri aamiinn yaAllah."><i
+                    class="bx bx-plus"></i></a>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-4 col-md-6 portfolio-item filter-app">
+            <div class="portfolio-wrap">
+              <video controls class="img-fluid">
+                <source src="assets/img/portfolio/video5.mp4" type="video/mp4">
+                Browser Anda tidak mendukung tag video.
+              </video>
+              <div class="portfolio-links">
+                <a href="assets/img/portfolio/video5.mp4" data-gallery="portfolioGallery" class="portfolio-lightbox"
+                  title="Akhirnya kamu mau aku ajak jogging bareng Sayang hehehe, yuk kapan-kapan olahraga lainnya bareng-bareng lagi yaa Sayang."><i
+                    class="bx bx-plus"></i></a>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-4 col-md-6 portfolio-item filter-app">
+            <div class="portfolio-wrap">
+              <video controls class="img-fluid">
+                <source src="assets/img/portfolio/video6.mp4" type="video/mp4">
+                Browser Anda tidak mendukung tag video.
+              </video>
+              <div class="portfolio-links">
+                <a href="assets/img/portfolio/video6.mp4" data-gallery="portfolioGallery" class="portfolio-lightbox"
+                  title="Random video lagi waktu di Ichiban Sushi dalam rangka Self Reward mu hari terakhir UTS. "><i
+                    class="bx bx-plus"></i></a>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-4 col-md-6 portfolio-item filter-app">
+            <div class="portfolio-wrap">
+              <video controls class="img-fluid">
+                <source src="assets/img/portfolio/video7.mp4" type="video/mp4">
+                Browser Anda tidak mendukung tag video.
+              </video>
+              <div class="portfolio-links">
+                <a href="assets/img/portfolio/video7.mp4" data-gallery="portfolioGallery" class="portfolio-lightbox"
+                  title="Gabut banget waktu nunggu hujan reda di Plaza Agro, kamu lucu banget loh Sayang dan gemesin banget pula yaAllah manisnya pacarkuuu."><i
+                    class="bx bx-plus"></i></a>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-4 col-md-6 portfolio-item filter-app">
+            <div class="portfolio-wrap">
+              <video controls class="img-fluid">
+                <source src="assets/img/portfolio/video8.mp4" type="video/mp4">
+                Browser Anda tidak mendukung tag video.
+              </video>
+              <div class="portfolio-links">
+                <a href="assets/img/portfolio/video8.mp4" data-gallery="portfolioGallery" class="portfolio-lightbox"
+                  title="Gimana Es Buahnya? menurutku biasa aja tapi jadi luar biasa soalnya makannya bareng kamu hehehe jadi tambah manis Sayang liat kamu."><i
+                    class="bx bx-plus"></i></a>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-4 col-md-6 portfolio-item filter-app">
+            <div class="portfolio-wrap">
+              <video controls class="img-fluid">
+                <source src="assets/img/portfolio/video9.mp4" type="video/mp4">
+                Browser Anda tidak mendukung tag video.
+              </video>
+              <div class="portfolio-links">
+                <a href="assets/img/portfolio/video9.mp4" data-gallery="portfolioGallery" class="portfolio-lightbox"
+                  title="Waktu di Ambarukmmo Plaza ada event gitu dan kita dateng buat quality time, kamunya gemes banget yaAllah aku sayang kamu banyak-banyak dan bersyukur punya kamu."><i
+                    class="bx bx-plus"></i></a>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-4 col-md-6 portfolio-item filter-app">
+            <div class="portfolio-wrap">
+              <video controls class="img-fluid">
+                <source src="assets/img/portfolio/video10.mp4" type="video/mp4">
+                Browser Anda tidak mendukung tag video.
+              </video>
+              <div class="portfolio-links">
+                <a href="assets/img/portfolio/video10.mp4" data-gallery="portfolioGallery" class="portfolio-lightbox"
+                  title="Dinyanyiin kamu adalah salah satu favoritku Sayang. Nyanyiin aku lagi ya Sayang, aku kangen sama suara indahmu itu."><i
+                    class="bx bx-plus"></i></a>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-4 col-md-6 portfolio-item filter-app">
+            <div class="portfolio-wrap">
+              <video controls class="img-fluid">
+                <source src="assets/img/portfolio/video11.mp4" type="video/mp4">
+                Browser Anda tidak mendukung tag video.
+              </video>
+              <div class="portfolio-links">
+                <a href="assets/img/portfolio/video11.mp4" data-gallery="portfolioGallery" class="portfolio-lightbox"
+                  title="Time Lapse sewaktu kita makan di Boci deket FT UNY itu Sayang, awalnya aku kurang suka sama fast food Boci dan Seblak, tapi semenjak pacaran sama kamu pelan-pelan jadi menyukainya Sayang."><i
+                    class="bx bx-plus"></i></a>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-4 col-md-6 portfolio-item filter-app">
+            <div class="portfolio-wrap">
+              <video controls class="img-fluid">
+                <source src="assets/img/portfolio/video12.mp4" type="video/mp4">
+                Browser Anda tidak mendukung tag video.
+              </video>
+              <div class="portfolio-links">
+                <a href="assets/img/portfolio/video12.mp4" data-gallery="portfolioGallery" class="portfolio-lightbox"
+                  title="Sunset di Pantai Parangtritis Sayang, waktu selepas kita UAS Semester 3 dan mau pulang ke Pekalongan hehehe ternyata Pantai itu tidak seburuk yang aku pikirkan kalo kesananya bareng kamu. Aku kalau inget pantai, ingetnya sama kamu Sayang karena kamu yang buat aku suka sama pantai, Love you Sayangkuu."><i
+                    class="bx bx-plus"></i></a>
               </div>
             </div>
           </div>
 
         </div>
+
+      </div>
 
       </div>
     </section><!-- End Portfolio Section -->
-
-    <!-- ======= Testimonials Section ======= -->
-    <section id="testimonials" class="testimonials section-bg">
-      <div class="container">
-
-        <div class="section-title" data-aos="fade-in" data-aos-delay="100">
-          <h2>Testimonials</h2>
-          <p>Magnam dolores commodi suscipit. Necessitatibus eius consequatur ex aliquid fuga eum quidem. Sit sint
-            consectetur velit. Quisquam quos quisquam cupiditate. Et nemo qui impedit suscipit alias ea. Quia fugiat sit
-            in iste officiis commodi quidem hic quas.</p>
-        </div>
-
-        <div class="testimonials-slider swiper" data-aos="fade-up" data-aos-delay="100">
-          <div class="swiper-wrapper">
-
-            <div class="swiper-slide">
-              <div class="testimonial-item">
-                <p>
-                  <i class="bx bxs-quote-alt-left quote-icon-left"></i>
-                  Proin iaculis purus consequat sem cure digni ssim donec porttitora entum suscipit rhoncus. Accusantium
-                  quam, ultricies eget id, aliquam eget nibh et. Maecen aliquam, risus at semper.
-                  <i class="bx bxs-quote-alt-right quote-icon-right"></i>
-                </p>
-                <img src="assets/img/testimonials/testimonials-1.jpg" class="testimonial-img" alt="">
-                <h3>Saul Goodman</h3>
-                <h4>Ceo &amp; Founder</h4>
-              </div>
-            </div><!-- End testimonial item -->
-
-            <div class="swiper-slide">
-              <div class="testimonial-item">
-                <p>
-                  <i class="bx bxs-quote-alt-left quote-icon-left"></i>
-                  Export tempor illum tamen malis malis eram quae irure esse labore quem cillum quid cillum eram malis
-                  quorum velit fore eram velit sunt aliqua noster fugiat irure amet legam anim culpa.
-                  <i class="bx bxs-quote-alt-right quote-icon-right"></i>
-                </p>
-                <img src="assets/img/testimonials/testimonials-2.jpg" class="testimonial-img" alt="">
-                <h3>Sara Wilsson</h3>
-                <h4>Designer</h4>
-              </div>
-            </div><!-- End testimonial item -->
-
-            <div class="swiper-slide">
-              <div class="testimonial-item">
-                <p>
-                  <i class="bx bxs-quote-alt-left quote-icon-left"></i>
-                  Enim nisi quem export duis labore cillum quae magna enim sint quorum nulla quem veniam duis minim
-                  tempor labore quem eram duis noster aute amet eram fore quis sint minim.
-                  <i class="bx bxs-quote-alt-right quote-icon-right"></i>
-                </p>
-                <img src="assets/img/testimonials/testimonials-3.jpg" class="testimonial-img" alt="">
-                <h3>Jena Karlis</h3>
-                <h4>Store Owner</h4>
-              </div>
-            </div><!-- End testimonial item -->
-
-            <div class="swiper-slide">
-              <div class="testimonial-item">
-                <p>
-                  <i class="bx bxs-quote-alt-left quote-icon-left"></i>
-                  Fugiat enim eram quae cillum dolore dolor amet nulla culpa multos export minim fugiat minim velit
-                  minim dolor enim duis veniam ipsum anim magna sunt elit fore quem dolore labore illum veniam.
-                  <i class="bx bxs-quote-alt-right quote-icon-right"></i>
-                </p>
-                <img src="assets/img/testimonials/testimonials-4.jpg" class="testimonial-img" alt="">
-                <h3>Matt Brandon</h3>
-                <h4>Freelancer</h4>
-              </div>
-            </div><!-- End testimonial item -->
-
-            <div class="swiper-slide">
-              <div class="testimonial-item">
-                <p>
-                  <i class="bx bxs-quote-alt-left quote-icon-left"></i>
-                  Quis quorum aliqua sint quem legam fore sunt eram irure aliqua veniam tempor noster veniam enim culpa
-                  labore duis sunt culpa nulla illum cillum fugiat legam esse veniam culpa fore nisi cillum quid.
-                  <i class="bx bxs-quote-alt-right quote-icon-right"></i>
-                </p>
-                <img src="assets/img/testimonials/testimonials-5.jpg" class="testimonial-img" alt="">
-                <h3>John Larson</h3>
-                <h4>Entrepreneur</h4>
-              </div>
-            </div><!-- End testimonial item -->
-
-          </div>
-          <div class="swiper-pagination"></div>
-        </div>
-
-      </div>
-    </section><!-- End Testimonials Section -->
-
+    
     <!-- ======= Team Section ======= -->
     <section id="team" class="team">
       <div class="container">
 
         <div class="section-title" data-aos="fade-in" data-aos-delay="100">
-          <h2>Team</h2>
-          <p>Magnam dolores commodi suscipit. Necessitatibus eius consequatur ex aliquid fuga eum quidem. Sit sint
-            consectetur velit. Quisquam quos quisquam cupiditate. Et nemo qui impedit suscipit alias ea. Quia fugiat sit
-            in iste officiis commodi quidem hic quas.</p>
+          <h2>Dari Mereka</h2>
+          <p>Kumpulan ucapan dari sebagian orang terdekatmu semoga doanya bisa terkabul semua ya sayang, aamiin. Jangan
+            mudah
+            menyerah ya sayang sama hidup, di dunia ini banyak yang sayang kamu yaa, jadi harus selalu inget mereka ya
+            kalo lagi di titik terendahmu.</p>
+          <p>*Note: Kalau mau denger video ucapannya langsung klik di muka videonya aja Sayang tapi satu per satu jangan barengan biar ga mulai semua bebarengan karena kalau kamu klik muka video otomatis mulai videonya, kalau mau lihat deskripsi videonya bisa klik <i>icon</i> '+' yaa, tetapi minusnya kalau lagi lihat deskripsi dan dengerin suara videonya bakalan kalah sama suara <i>backsoundnya</i> hehehe maaf ya Sayang, Semoga Sukaa!!! Love You More, Sayanggg!!!</p>
         </div>
 
         <div class="row">
-
-          <div class="col-lg-4 col-md-6">
-            <div class="member" data-aos="fade-up">
-              <div class="pic"><img src="assets/img/team/team-1.jpg" class="img-fluid" alt=""></div>
+          <div class="col-lg-4 col-md-6 portfolio-item filter-app">
+            <div class="member">
+              <video id="videoUcapan" controls class="img-fluid">
+                <source src="assets/img/portfolio/video13.mp4" type="video/mp4">
+                Browser Anda tidak mendukung tag video.
+              </video>
               <div class="member-info">
-                <h4>Walter White</h4>
-                <span>Chief Executive Officer</span>
-                <div class="social">
-                  <a href=""><i class="bi bi-twitter"></i></a>
-                  <a href=""><i class="bi bi-facebook"></i></a>
-                  <a href=""><i class="bi bi-instagram"></i></a>
-                  <a href=""><i class="bi bi-linkedin"></i></a>
-                </div>
+                <h4>Aira & Aghan</h4>
+                <a href="assets/img/portfolio/video13.mp4" id="videoucapan" data-gallery="memberGallery" class="portfolio-lightbox"
+                  title="Anak kecilmu yang selalu kangen sama kamu kalo lagi di Jogja hahaha"><i
+                    class="bx bx-plus"></i></a>
               </div>
             </div>
           </div>
 
-          <div class="col-lg-4 col-md-6">
-            <div class="member" data-aos="fade-up" data-aos-delay="150">
-              <div class="pic"><img src="assets/img/team/team-2.jpg" class="img-fluid" alt=""></div>
+          <div class="col-lg-4 col-md-6 portfolio-item filter-app">
+            <div class="member">
+              <video id="videoUcapan" controls class="img-fluid">
+                <source src="assets/img/portfolio/video14.mp4" type="video/mp4">
+                Browser Anda tidak mendukung tag video.
+              </video>
               <div class="member-info">
-                <h4>Sarah Jhonson</h4>
-                <span>Product Manager</span>
-                <div class="social">
-                  <a href=""><i class="bi bi-twitter"></i></a>
-                  <a href=""><i class="bi bi-facebook"></i></a>
-                  <a href=""><i class="bi bi-instagram"></i></a>
-                  <a href=""><i class="bi bi-linkedin"></i></a>
-                </div>
+                <h4>Dari Dinda</h4>
+                <a href="assets/img/portfolio/video14.mp4" id="videoucapan" data-gallery="memberGallery" class="portfolio-lightbox"
+                  title="Sabahatmu yang katanya  dari SMP sampai sekarang ya Sayang, semoga awet ya pertemanannya sampe di akhirat nanti."><i
+                    class="bx bx-plus"></i></a>
               </div>
             </div>
           </div>
 
-          <div class="col-lg-4 col-md-6">
-            <div class="member" data-aos="fade-up" data-aos-delay="300">
-              <div class="pic"><img src="assets/img/team/team-3.jpg" class="img-fluid" alt=""></div>
+          <div class="col-lg-4 col-md-6 portfolio-item filter-app">
+            <div class="member">
+              <video id="videoUcapan" controls class="img-fluid">
+                <source src="assets/img/portfolio/video15.mov" type="video/mp4">
+                Browser Anda tidak mendukung tag video.
+              </video>
               <div class="member-info">
-                <h4>William Anderson</h4>
-                <span>CTO</span>
-                <div class="social">
-                  <a href=""><i class="bi bi-twitter"></i></a>
-                  <a href=""><i class="bi bi-facebook"></i></a>
-                  <a href=""><i class="bi bi-instagram"></i></a>
-                  <a href=""><i class="bi bi-linkedin"></i></a>
-                </div>
+                <h4>Dari Aza</h4>
+                <a href="assets/img/portfolio/video15.mov" id="videoucapan" data-gallery="memberGallery" class="portfolio-lightbox"
+                  title="Temen kuliahmu yang dari Boyolali Sayang wkwk, di doanya ada harapan semoga kita langgeng terus jadi mari kita aamiin kan dan usahakan ya Sayang untuk kita aamiin."><i
+                    class="bx bx-plus"></i></a>
               </div>
             </div>
           </div>
 
+          <div class="col-lg-4 col-md-6 portfolio-item filter-app">
+            <div class="member">
+              <video id="videoUcapan" controls class="img-fluid">
+                <source src="assets/img/portfolio/video16.mp4" type="video/mp4">
+                Browser Anda tidak mendukung tag video.
+              </video>
+              <div class="member-info">
+                <h4>Dari Afi</h4>
+                <a href="assets/img/portfolio/video16.mp4" id="videoucapan" data-gallery="memberGallery" class="portfolio-lightbox"
+                  title="Temen SMA mu sekaligus temen SMP ku dulu wkwkwk, dunia sempit banget ya Sayang."><i
+                    class="bx bx-plus"></i></a>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-4 col-md-6 portfolio-item filter-app">
+            <div class="member">
+              <video id="videoUcapan" controls class="img-fluid">
+                <source src="assets/img/portfolio/video17.mp4" type="video/mp4">
+                Browser Anda tidak mendukung tag video.
+              </video>
+              <div class="member-info">
+                <h4>Dari Syifa</h4>
+                <a href="assets/img/portfolio/video17.mp4" id="videoucapan" data-gallery="memberGallery" class="portfolio-lightbox"
+                  title="Temen kuliahmu yang dari  Klaten Sayang, yang sering banget bantu kita berdua  dan kita ngerepotin keluarganya hehe. 
+                  Jaga pertemanan sama Syifa ya Sayang khususnya karena teman-teman perkuliahanmu lainnya tidak seperti Syifa itu ya kita udah bisa menilai dari pengalaman yang kamu ceritakan."><i
+                    class="bx bx-plus"></i></a>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-4 col-md-6 portfolio-item filter-app">
+            <div class="member">
+              <video controls class="img-fluid" id="videoUcapan">
+                <source src="assets/img/portfolio/video18.mp4" type="video/mp4">
+                Browser Anda tidak mendukung tag video.
+              </video>
+              <div class="member-info">
+                <h4>Dari Rofiah</h4>
+                <a href="assets/img/portfolio/video18.mp4" id="videoucapan" data-gallery="memberGallery" class="portfolio-lightbox"
+                  title="Temen kuliahmu yang dari  Klaten lagi Sayang, semoga baik-baik aja ya Sayang pertemanannya kedepannya aamiin."><i
+                    class="bx bx-plus"></i></a>
+              </div>
+            </div>
+          </div>
         </div>
 
       </div>
     </section><!-- End Team Section -->
-
-    <!-- ======= Contact Section ======= -->
-    <section id="contact" class="contact section-bg">
-      <div class="container" data-aos="fade-up">
-
-        <div class="section-title">
-          <h2>Contact</h2>
-          <p>Magnam dolores commodi suscipit. Necessitatibus eius consequatur ex aliquid fuga eum quidem. Sit sint
-            consectetur velit. Quisquam quos quisquam cupiditate. Et nemo qui impedit suscipit alias ea. Quia fugiat sit
-            in iste officiis commodi quidem hic quas.</p>
-        </div>
-
-        <div class="row">
-          <div class="col-lg-6">
-            <div class="info-box mb-4">
-              <i class="bx bx-map"></i>
-              <h3>Our Address</h3>
-              <p>A108 Adam Street, New York, NY 535022</p>
-            </div>
-          </div>
-
-          <div class="col-lg-3 col-md-6">
-            <div class="info-box  mb-4">
-              <i class="bx bx-envelope"></i>
-              <h3>Email Us</h3>
-              <p>contact@example.com</p>
-            </div>
-          </div>
-
-          <div class="col-lg-3 col-md-6">
-            <div class="info-box  mb-4">
-              <i class="bx bx-phone-call"></i>
-              <h3>Call Us</h3>
-              <p>+1 5589 55488 55</p>
-            </div>
-          </div>
-
-        </div>
-
-        <div class="row">
-
-          <div class="col-lg-6 ">
-            <iframe class="mb-4 mb-lg-0"
-              src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d12097.433213460943!2d-74.0062269!3d40.7101282!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0xb89d1fe6bc499443!2sDowntown+Conference+Center!5e0!3m2!1smk!2sbg!4v1539943755621"
-              frameborder="0" style="border:0; width: 100%; height: 384px;" allowfullscreen></iframe>
-          </div>
-
-          <div class="col-lg-6">
-            <form action="forms/contact.php" method="post" role="form" class="php-email-form">
-              <div class="row">
-                <div class="col-md-6 form-group">
-                  <input type="text" name="name" class="form-control" id="name" placeholder="Your Name" required>
-                </div>
-                <div class="col-md-6 form-group mt-3 mt-md-0">
-                  <input type="email" class="form-control" name="email" id="email" placeholder="Your Email" required>
-                </div>
-              </div>
-              <div class="form-group mt-3">
-                <input type="text" class="form-control" name="subject" id="subject" placeholder="Subject" required>
-              </div>
-              <div class="form-group mt-3">
-                <textarea class="form-control" name="message" rows="5" placeholder="Message" required></textarea>
-              </div>
-              <div class="my-3">
-                <div class="loading">Loading</div>
-                <div class="error-message"></div>
-                <div class="sent-message">Your message has been sent. Thank you!</div>
-              </div>
-              <div class="text-center"><button type="submit">Send Message</button></div>
-            </form>
-          </div>
-
-        </div>
-
-      </div>
-    </section><!-- End Contact Section -->
-
-  </main><!-- End #main -->
 
   <!-- ======= Footer ======= -->
   <footer id="footer">
@@ -682,72 +962,16 @@
       <div class="container">
         <div class="row">
 
-          <div class="col-lg-4 col-md-6">
-            <div class="footer-info">
-              <h3>Squadfree</h3>
-              <p class="pb-3"><em>Qui repudiandae et eum dolores alias sed ea. Qui suscipit veniam excepturi quod.</em>
-              </p>
-              <p>
-                A108 Adam Street <br>
-                NY 535022, USA<br><br>
-                <strong>Phone:</strong> +1 5589 55488 55<br>
-                <strong>Email:</strong> info@example.com<br>
-              </p>
-              <div class="social-links mt-3">
-                <a href="#" class="twitter"><i class="bx bxl-twitter"></i></a>
-                <a href="#" class="facebook"><i class="bx bxl-facebook"></i></a>
-                <a href="#" class="instagram"><i class="bx bxl-instagram"></i></a>
-                <a href="#" class="google-plus"><i class="bx bxl-skype"></i></a>
-                <a href="#" class="linkedin"><i class="bx bxl-linkedin"></i></a>
-              </div>
-            </div>
-          </div>
-
-          <div class="col-lg-2 col-md-6 footer-links">
-            <h4>Useful Links</h4>
-            <ul>
-              <li><i class="bx bx-chevron-right"></i> <a href="#">Home</a></li>
-              <li><i class="bx bx-chevron-right"></i> <a href="#">About us</a></li>
-              <li><i class="bx bx-chevron-right"></i> <a href="#">Services</a></li>
-              <li><i class="bx bx-chevron-right"></i> <a href="#">Terms of service</a></li>
-              <li><i class="bx bx-chevron-right"></i> <a href="#">Privacy policy</a></li>
-            </ul>
-          </div>
-
-          <div class="col-lg-2 col-md-6 footer-links">
-            <h4>Our Services</h4>
-            <ul>
-              <li><i class="bx bx-chevron-right"></i> <a href="#">Web Design</a></li>
-              <li><i class="bx bx-chevron-right"></i> <a href="#">Web Development</a></li>
-              <li><i class="bx bx-chevron-right"></i> <a href="#">Product Management</a></li>
-              <li><i class="bx bx-chevron-right"></i> <a href="#">Marketing</a></li>
-              <li><i class="bx bx-chevron-right"></i> <a href="#">Graphic Design</a></li>
-            </ul>
-          </div>
-
-          <div class="col-lg-4 col-md-6 footer-newsletter">
-            <h4>Our Newsletter</h4>
-            <p>Tamen quem nulla quae legam multos aute sint culpa legam noster magna</p>
-            <form action="" method="post">
-              <input type="email" name="email"><input type="submit" value="Subscribe">
-            </form>
-
-          </div>
-
-        </div>
+          
       </div>
     </div>
 
     <div class="container">
       <div class="copyright">
-        &copy; Copyright <strong><span>Squadfree</span></strong>. All Rights Reserved
+        &copy; Copyright <strong><span>Januari 2024</span></strong>. All Rights Reserved
       </div>
       <div class="credits">
-        <!-- All the links in the footer should remain intact. -->
-        <!-- You can delete the links only if you purchased the pro version. -->
-        <!-- Licensing information: https://bootstrapmade.com/license/ -->
-        <!-- Purchase the pro version with working PHP/AJAX contact form: https://bootstrapmade.com/squadfree-free-bootstrap-template-creative/ -->
-        Designed by <a href="https://bootstrapmade.com/">BootstrapMade</a>
+       <i>M. Indra Adi Kusuma as Thalita Nibrastsany BF hehe</i>
       </div>
     </div>
   </footer><!-- End Footer -->
@@ -767,7 +991,6 @@
 
   <!-- Template Main JS File -->
   <script src="assets/js/main.js"></script>
-
 </body>
 
 </html>
